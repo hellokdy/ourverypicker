@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="ko">
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'landing/landing.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'landing.css' %}"> -->
+    <!-- <link rel="stylesheet" href="landing.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@200;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    
+    <title>verypicker_main</title>
+
+
+</head>
+<body>
+
+    <script type="text/javascript">
+        // function은 views.py에서 def와 같다
+        var sentences = [];
+        var ordering = 0;
+        var final_order = 0;
+        function inputtext_check() {
+            var gett = document.getElementById("inputtext").value;
+                       
+            console.log('가져온 텍스트: ', gett);
+                        
+            sentences = gett.replace(/(\.+|\:|\!|\?)(?<!\w.\w.)(?<![A-Z][a-z]\.)(\"*|\'*|\)*|}*|]*)(\s|\n|\r|\r\n)/gm, "$1$2|").split("|");
+            console.log(sentences);
+            console.log(sentences[0]);
+            console.log(sentences.length);
+   
+            ordering = 0;
+            final_order = sentences.length;
+            
+            var array = new Array();
+           jQuery.ajaxSettings.traditional = true; 
+            $.ajax({
+                type: "GET",
+                url: sentences[0],
+                data : JSON.stringify(array),
+                dataType: "JSON",
+                traditional : true,
+                success: function (data) {
+                    console.log('성공');
+                    console.log(data);
+                    var element = document.getElementById("goo_eng");
+                    element.innerText = data[0];
+
+                    var element = document.getElementById("goo_chi_eng");
+                    element.innerText = data[1];
+
+                    var element = document.getElementById("papa_eng");
+                    element.innerText = data[2];
+
+                    var element = document.getElementById("papa_jap_eng");
+                    element.innerText = data[3];
+                  
+                    console.log(ordering);
+ 
+
+                }
+            }); // END AJAX
+
+            document.getElementById('input_text_real').value = sentences[ordering];
+            // document.getElementById('nth_sentence').innerText = '1'+"번째 문장";
+
+            // 나중에 API 돌린 문장을 아래에 저장할 것
+            var goo_eng = "구글 번역내용 한→영";
+            var goo_chi_eng = "구글 번역내용 한→중→영";
+            var papa_eng ="파파고 번역내용 한→영";
+            var papa_jap_eng = "파파고 번영내용 한→일→영";
+
+            // document.getElementById('goo_eng').innerText = goo_eng;
+            // document.getElementById('goo_chi_eng').innerText = goo_chi_eng;
+            // document.getElementById('papa_eng').innerText = papa_eng;
+            // document.getElementById('papa_jap_eng').innerText = papa_jap_eng;
+
+       
+        }
+        // 한 문장을 위에서 수정해서 Enter 쳐도 바로 번역되도록 수정 필요
+        function input_text_enter() {
+            document.getElementById('goo_eng').innerText = document.getElementById('input_text_real').value;
+            document.getElementById("goo_chi_eng").innerText = document.getElementById('input_text_real').value;
+            document.getElementById("papa_eng").innerText = document.getElementById('input_text_real').value;
+            document.getElementById("papa_jap_eng").innerText = document.getElementById('input_text_real').value;
+
+            var gett = document.getElementById("input_text_real").value;
+                       
+                       console.log('가져온 텍스트: ', gett);
+                                   
+                       var sentences = gett.replace(/(\.+|\:|\!|\?)(?<!\w.\w.)(?<![A-Z][a-z]\.)(\"*|\'*|\)*|}*|]*)(\s|\n|\r|\r\n)/gm, "$1$2|").split("|");
+                       console.log(sentences);
+                       
+                       var array = new Array();
+                      jQuery.ajaxSettings.traditional = true; 
+                       $.ajax({
+                           type: "GET",
+                           url: sentences[0],
+                           data : JSON.stringify(array),
+                           dataType: "JSON",
+                           traditional : true,
+                           success: function (data) {
+                               console.log('성공');
+                               console.log(data);
+                               var element = document.getElementById("goo_eng");
+                               element.innerText = data[0];
+           
+                               var element = document.getElementById("goo_chi_eng");
+                               element.innerText = data[1];
+           
+                               var element = document.getElementById("papa_eng");
+                               element.innerText = data[2];
+           
+                               var element = document.getElementById("papa_jap_eng");
+                               element.innerText = data[3];
+           
+                           }
+                       });
+        }
+
+        function chosentext_goo_eng() {        
+            document.getElementById('translated_real').value = document.getElementById('goo_eng').innerText;
+        }
+        function chosentext_goo_chi_eng() {
+            document.getElementById('translated_real').value = document.getElementById("goo_chi_eng").innerText;      
+        }
+        function chosentext_papa_eng() {
+            document.getElementById('translated_real').value = document.getElementById("papa_eng").innerText;    
+        }
+        function chosentext_papa_jap_eng() {
+            document.getElementById('translated_real').value = document.getElementById("papa_jap_eng").innerText;     
+        }
+
+        function before_sentence(){
+            if (ordering >= 1){
+                ordering -= 1;
+                    console.log(ordering);
+                    console.log(final_order);
+                    
+                    var array = new Array();
+                    jQuery.ajaxSettings.traditional = true; 
+                        $.ajax({
+                            type: "GET",
+                            url: sentences[ordering],
+                            data : JSON.stringify(array),
+                            dataType: "JSON",
+                            traditional : true,
+                            success: function (data) {
+                                console.log('성공');
+                                console.log(data);
+                                var element = document.getElementById("goo_eng");
+                                element.innerText = data[0];
+
+                                var element = document.getElementById("goo_chi_eng");
+                                element.innerText = data[1];
+
+                                var element = document.getElementById("papa_eng");
+                                element.innerText = data[2];
+
+                                var element = document.getElementById("papa_jap_eng");
+                                element.innerText = data[3];
+                            
+                                console.log(ordering);
+            
+
+                            }
+                        }); // END AJAX
+
+                document.getElementById('input_text_real').value = sentences[ordering];
+            } else {
+                ordering = 0;
+                    console.log(ordering);
+                    console.log(final_order);
+                    
+                    var array = new Array();
+                    jQuery.ajaxSettings.traditional = true; 
+                        $.ajax({
+                            type: "GET",
+                            url: sentences[ordering],
+                            data : JSON.stringify(array),
+                            dataType: "JSON",
+                            traditional : true,
+                            success: function (data) {
+                                console.log('성공');
+                                console.log(data);
+                                var element = document.getElementById("goo_eng");
+                                element.innerText = data[0];
+
+                                var element = document.getElementById("goo_chi_eng");
+                                element.innerText = data[1];
+
+                                var element = document.getElementById("papa_eng");
+                                element.innerText = data[2];
+
+                                var element = document.getElementById("papa_jap_eng");
+                                element.innerText = data[3];
+                            
+                                console.log(ordering);
+            
+
+                            }
+                        }); // END AJAX
+
+                document.getElementById('input_text_real').value = sentences[ordering];
+            }
+        }
+
+        function final() {
+            document.getElementById("input_paragraph").value = document.getElementById("input_paragraph").value+" "+ document.getElementById('translated_real').value;
+            // 마지막 문장 클릭시 바로 복사되도록 기능 추가 필요
+            
+ 
+            
+            if (ordering < final_order-1){
+
+                ordering += 1;
+                console.log(ordering);
+                console.log(final_order);
+                
+                var array = new Array();
+                jQuery.ajaxSettings.traditional = true; 
+                    $.ajax({
+                        type: "GET",
+                        url: sentences[ordering],
+                        data : JSON.stringify(array),
+                        dataType: "JSON",
+                        traditional : true,
+                        success: function (data) {
+                            console.log('성공');
+                            console.log(data);
+                            var element = document.getElementById("goo_eng");
+                            element.innerText = data[0];
+
+                            var element = document.getElementById("goo_chi_eng");
+                            element.innerText = data[1];
+
+                            var element = document.getElementById("papa_eng");
+                            element.innerText = data[2];
+
+                            var element = document.getElementById("papa_jap_eng");
+                            element.innerText = data[3];
+                        
+                            console.log(ordering);
+        
+
+                        }
+                    }); // END AJAX
+
+            document.getElementById('input_text_real').value = sentences[ordering];
+            } else {
+                console.log(ordering);
+                console.log(sentences.length);
+                document.getElementById('next_button').click();
+                const copy_text = document.getElementById("input_paragraph");
+                copy_text.select();
+                document.execCommand('copy');
+
+
+
+                // Swal.fire('Perfect Translations! Go Next!');
+            }
+
+
+
+
+
+
+
+        }
+
+        function copy() {
+            const copy_text = document.getElementById("input_paragraph");
+            copy_text.select();
+            document.execCommand('copy');
+        }
+    </script>
+    
+
+
+    <style>
+      .carousel-item {
+        height:100vh;
+        background: #13181E;
+        position: relative;
+      }
+      .container{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+  
+    </style>
+  
+    <div class="outside">
+      <div class="nav-out">
+        <div class="navigator">
+          <div class="logo">
+              <h1 onClick="window.location.reload()" style="cursor: pointer;" >verypicker</h1>
+          </div>
+          <div id="input_container">
+              <!-- <input type="text" id="input_search" value="search"> -->
+              <form method=get class="example" action="http://endic.naver.com/search.nhn?sLn=kr&dicQuery={0}&x=12&y=12&query={0}&target=endic&ie=utf8&query\_utf=&isOnlyViewEE=N&Method=GET" target=this.value>
+                  <input type="text" placeholder="NAVER에서 단어검색하기" name="query">
+                  <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+          </div>
+         
+          <div class="pic_mypage">
+              <div class="goto_pickers">
+                  <a onClick="window.location.reload()" style="cursor: pointer;">PICKERS'</a>
+              </div>
+              <div class="goto_mypage">
+                  <a href=""><img class="finger" src="{% static 'realfinger.PNG' %}" alt="mypage"></a>
+              </div>
+          </div>
+       
+        </div>
+      </div>
+      <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false" data-bs-interval="false">
+        <ol class="carousel-indicators">
+          <li data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
+          <li data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
+          <li data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active" data-interval="false" data-bs-interval="false">
+            <div class="container">
+                 <div class="outer">
+                  <section class="container_wrapperp">
+                      <div class="mainboxp">
+                          <div class="input_herep">
+                              <div id="input_textp" method ="POST" action="{% url 'landing:inputtext' %}" enctype="multipart/form-data">
+                                   <textarea id="inputtext" placeholder="번역하고자 하는 글을 입력하세요" onfocus="this.placeholder=''" onblur="this.placeholder='번역하고자 하는 글을 입력하세요'"></textarea>
+                              </div>
+                              <div class="input_enter">
+                                    <button type="submit" class="button-19" role="button" href="" onclick="inputtext_check();" data-bs-slide="next" data-bs-target="#myCarousel">Enter</button>
+                              </div>
+                          </div>
+                        
+              
+            
+                      </div>
+                    <!-- <div class="translation_result">
+                        <div class="result_qq">
+                            <input type="text" class="translated_real2" value="단어 번역등?">
+                        </div>
+                    </div> -->
+                    </section>
+               
+              
+              
+              
+                </div>
+            </div>
+          </div>
+          <div class="carousel-item" data-interval="false" data-bs-interval="false">
+            <div class="container">
+                 <div class="outer">
+                  <section class="container_wrapper">
+                      <div class="mainbox">
+                          <div class="input_here">  
+                              <div id="input_text">
+                                <textarea cols="30" rows="20" id="input_text_real" placeholder="번역하고자 하는 글을 입력하세요" onfocus="this.placeholder=''" onblur="this.placeholder='번역하고자 하는 글을 입력하세요'"></textarea>
+                              </div>
+                              <div class="input_enter">
+                                  <div id="nth_sentence" class="nth_sentence">번역시작!</div>
+                                  <button class="button-19" role="button" id="input_text_enter" onclick="input_text_enter();">Enter</button>
+                              </div>
+                          </div>
+                          <div class="trans_area4">
+                              <div class="trans_area2">
+                                  <div class="transline">
+                                    <button role="button" id="goo_eng" class="trans_output" onclick="chosentext_goo_eng();">구글 한→영 번역문장</button>
+                                  </div>
+                                <hr class="lines" width=100% color=grey align="center" size=1/>                       
+                                 <div class="transline">
+                                      <button role="button" id="goo_chi_eng" class="trans_output" onclick="chosentext_goo_chi_eng();">구글 한→중→영 번역 문장</button>
+                                  </div>
+                      
+                              </div>
+                              <div class="trans_area2">
+                                  <div class="transline">
+                                      <button role="button" id="papa_eng" class="trans_output" onclick="chosentext_papa_eng();">파파고 한→영 번역 문장</button>
+                                  </div>
+                                  <hr class="lines" width=100% color=grey align="center" size=1/>    
+                                  <div class="transline">
+                                      <button role="button" id="papa_jap_eng" class="trans_output" onclick="chosentext_papa_jap_eng();">파파고 한→일→영 번역 문장</button>
+                                  </div>    
+                              </div>
+                          </div>
+              
+                          <div class="translation_result">
+                              <div class="translated">
+                                  <textarea type="text" id="translated_real" class="translated_real" placeholder="최종 선택 문장! 수정이 필요하면 수정하신 후 enter 클릭!" onfocus="this.placeholder=''" onblur="this.placeholder='최종 선택 문장! 수정이 필요하면 수정하신 후 enter 클릭!'"></textarea>
+                                  <div class="input_enter">
+                                    <button id="one_sentence_confirm" class="button-19" class="final" onclick="final();" role="button">Enter</button>
+                                    <button id="before_sen" type="submit" class="button-18" role="button" href="" onclick="before_sentence();">이전문장</button>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                    <!-- <div class="translation_result">
+                        <div class="result_qq">
+                            <input type="text" class="translated_real2" value="단어 번역등?">
+                        </div>
+                    </div> -->
+                    </section>
+               
+              
+              
+              
+                </div>
+            </div>
+          </div>
+          <div class="carousel-item" data-interval="false" data-interval="false">
+            <div class="container">
+                 <div class="outer">
+                  <section class="container_wrapperp">
+                      <div class="mainboxp">
+                          <div class="input_herep">
+                              <div id="input_textp">
+                                  <textarea id="input_paragraph" placeholder="최종 완성 문장들" onfocus="this.placeholder=''" onblur="this.placeholder='최종 완성~~'"></textarea>
+                              </div>
+                              <div class="input_enter">
+                                  <button class="button-19" role="button" id="copy" onclick="copy();">COPY!!!</button>
+                              </div>
+                          </div>
+                        
+              
+            
+                      </div>
+                    <!-- <div class="translation_result">
+                        <div class="result_qq">
+                            <input type="text" class="translated_real2" value="단어 번역등?">
+                        </div>
+                    </div> -->
+                    </section>
+               
+              
+              
+              
+                </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" id="next_button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </div>
+      </div>
+   
+  
+  
+  
+    
+     
+    </div>
+  
+</body>
+</html>
